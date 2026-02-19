@@ -1,21 +1,36 @@
-import crypto from "crypto";
+import { prisma } from "../db/prisma.js";
+
+const createSessionSchema = {
+  body: {
+    type: "object",
+    required: ["patientId", "deviceId"],
+    additionalProperties: false,
+    properties: {
+      patientId: { type: "string", minLength: 1 },
+      deviceId: { type: "string", minLength: 1 },
+    },
+  },
+};
+
 export default async function sessionRoutes(fastify) {
-    fastify.post("/sessions", async(request, reply) => {
-        const {patientId, deviceId} = request.body;
+  fastify.post(
+    "/sessions",
+    { schema: createSessionSchema },
+    async (request, reply) => {
+      const { patientId, deviceId } = request.body;
 
-        if(!patientId || !deviceId) {
-            return reply.status(400).send({error: "patientId and deviceId are required"});
-        }
+      const session = await prisma.session.create({
+        data: { patientId, deviceId },
+      });
 
-        const session = {
-            sessionId: crypto.randomUUID(),
-            patientId,
-            deviceId,
-            status: "created",
-            createdAt: new Date().toISOString()
-        };
+      return reply.code(201).send({
+        sessionId: session.id,
+        patientId: session.patientId,
+        deviceId: session.deviceId,
+        status: session.status,
+        createdAt: session.createdAt,
+      });
 
-        return session;
-    });
-
+    },
+  );
 }
