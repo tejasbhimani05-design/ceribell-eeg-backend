@@ -1,10 +1,13 @@
 import Fastify from "fastify";
+import sessionRoutes from "./routes/sessionRoutes.js";
 
 const app = Fastify({ logger: true });
 
 app.get("/health", async () => {
   return { status: "ok", service: "ceribell-eeg-backend" };
 });
+
+app.register(sessionRoutes);
 
 const start = async () => {
   try {
