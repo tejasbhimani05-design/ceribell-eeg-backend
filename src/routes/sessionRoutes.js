@@ -33,4 +33,11 @@ export default async function sessionRoutes(fastify) {
 
     },
   );
+
+  fastify.get("/sessions", async(request, reply) => {
+    const sessions = await prisma.session.findMany({
+        orderBy: { createdAt: "desc"}
+    });
+    return reply.send(sessions);
+  });
 }
