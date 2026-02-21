@@ -40,4 +40,16 @@ export default async function sessionRoutes(fastify) {
     });
     return reply.send(sessions);
   });
+
+  fastify.get("/sessions/:id", async (request, reply) => {
+  const { id } = request.params;
+
+  const session = await prisma.session.findUnique({ where: { id } });
+
+  if (!session) {
+    return reply.code(404).send({ error: "NOT_FOUND", message: "Session not found" });
+  }
+
+  return reply.send(session);
+});
 }
