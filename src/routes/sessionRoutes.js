@@ -76,7 +76,7 @@ export default async function sessionRoutes(fastify) {
       const {status} = request.body;
 
       try {
-        const updated = prisma.session.update({
+        const updated = await prisma.session.update({
           where: {id},
           data: {status},
         });
