@@ -12,6 +12,20 @@ const createSessionSchema = {
   },
 };
 
+const updateSessionSchema = {
+  body: {
+    type: "object",
+    required: ["status"],
+    additionalProperties: false,
+    properties: {
+      status: {
+        type: "string",
+        enum: ["created", "running", "completed", "failed"],
+      },
+    },
+  },
+};
+
 export default async function sessionRoutes(fastify) {
   fastify.post(
     "/sessions",
@@ -30,26 +44,49 @@ export default async function sessionRoutes(fastify) {
         status: session.status,
         createdAt: session.createdAt,
       });
-
     },
   );
 
-  fastify.get("/sessions", async(request, reply) => {
+  fastify.get("/sessions", async (request, reply) => {
     const sessions = await prisma.session.findMany({
-        orderBy: { createdAt: "desc"}
+      orderBy: { createdAt: "desc" },
     });
     return reply.send(sessions);
   });
 
   fastify.get("/sessions/:id", async (request, reply) => {
-  const { id } = request.params;
+    const { id } = request.params;
 
-  const session = await prisma.session.findUnique({ where: { id } });
+    const session = await prisma.session.findUnique({ where: { id } });
 
-  if (!session) {
-    return reply.code(404).send({ error: "NOT_FOUND", message: "Session not found" });
-  }
+    if (!session) {
+      return reply
+        .code(404)
+        .send({ error: "NOT_FOUND", message: "Session not found" });
+    }
 
-  return reply.send(session);
-});
+    return reply.send(session);
+  });
+
+  fastify.patch(
+    "/sessions/:id", 
+    { schema: updateSessionSchema },
+    async (request, reply) => {
+      const {id} = request.params;
+      const {status} = request.body;
+
+      try {
+        const updated = prisma.session.update({
+          where: {id},
+          data: {status},
+        });
+        return reply.send(updated);
+      } catch (err) {
+        if (err?.code === "P2025") {
+          return reply.code(404).send({ error: "NOT_FOUND", message: "Session not found"});
+        }
+        throw err;
+      }
+    }  
+  );
 }
