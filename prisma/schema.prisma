@@ -12,10 +12,17 @@ datasource db {
   provider = "postgresql"
 }
 
+enum SessionStatus {
+  created
+  running
+  completed
+  failed
+}
+
 model Session {
   id        String   @id @default(uuid())
   patientId String
   deviceId  String
-  status    String   @default("created")
+  status    SessionStatus @default(created)
   createdAt DateTime @default(now())
 }

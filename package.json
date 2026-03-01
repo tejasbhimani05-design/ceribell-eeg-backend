@@ -12,13 +12,13 @@
   "type": "module",
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.1",
-    "@prisma/client": "^7.4.1",
+    "@prisma/client": "^7.4.2",
     "dotenv": "^17.2.4",
     "fastify": "^5.7.4",
-    "pg": "^8.18.0",
-    "prisma": "^7.4.1"
+    "pg": "^8.18.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "prisma": "^7.4.2"
   }
 }

@@ -26,6 +26,17 @@ const updateSessionSchema = {
   },
 };
 
+const sessionIdParamsSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    additionalProperties: false,
+    properties: {
+      id: { type: "string", minLength: 1 }, 
+    },
+  },
+};
+
 export default async function sessionRoutes(fastify) {
   fastify.post(
     "/sessions",
@@ -54,7 +65,7 @@ export default async function sessionRoutes(fastify) {
     return reply.send(sessions);
   });
 
-  fastify.get("/sessions/:id", async (request, reply) => {
+  fastify.get("/sessions/:id", { schema: sessionIdParamsSchema }, async (request, reply) => {
     const { id } = request.params;
 
     const session = await prisma.session.findUnique({ where: { id } });
@@ -70,7 +81,12 @@ export default async function sessionRoutes(fastify) {
 
   fastify.patch(
     "/sessions/:id", 
-    { schema: updateSessionSchema },
+    { 
+      schema: {
+        sessionIdParamsSchema, 
+        updateSessionSchema, 
+      },
+    },
     async (request, reply) => {
       const {id} = request.params;
       const {status} = request.body;
