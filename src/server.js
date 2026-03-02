@@ -1,7 +1,28 @@
 import Fastify from "fastify";
 import sessionRoutes from "./routes/sessionRoutes.js";
+import swagger from "@fastify/swagger";
+import swaggerUI from "@fastify/swagger-ui";
+import cors from "@fastify/cors";
 
 const app = Fastify({ logger: true });
+
+await app.register(cors, {
+  origin: true,
+});
+
+await app.register(swagger, {
+  openapi: {
+    info: {
+      title: "Ceribell EEG Backend API",
+      description: "API documentation for sessions and related endpoints",
+      version: "1.0.0",
+    },
+  },
+});
+
+await app.register(swaggerUI, {
+  routePrefix: "/docs",
+});
 
 app.get("/health", async () => {
   return { status: "ok", service: "ceribell-eeg-backend" };

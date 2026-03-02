@@ -83,8 +83,8 @@ export default async function sessionRoutes(fastify) {
     "/sessions/:id", 
     { 
       schema: {
-        sessionIdParamsSchema, 
-        updateSessionSchema, 
+        ...sessionIdParamsSchema, 
+        ...updateSessionSchema, 
       },
     },
     async (request, reply) => {
