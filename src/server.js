@@ -13,8 +13,8 @@ await app.register(cors, {
 await app.register(swagger, {
   openapi: {
     info: {
-      title: "Ceribell EEG Backend API",
-      description: "API documentation for sessions and related endpoints",
+      title: "EEG Data Management Backend API",
+      description: "API documentation for EEG data management endpoints",
       version: "1.0.0",
     },
   },
@@ -25,7 +25,7 @@ await app.register(swaggerUI, {
 });
 
 app.get("/health", async () => {
-  return { status: "ok", service: "ceribell-eeg-backend" };
+  return { status: "ok", service: "eeg-data-management-backend" };
 });
 
 app.register(sessionRoutes);
