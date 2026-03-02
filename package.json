@@ -1,5 +1,5 @@
 {
-  "name": "ceribell-eeg-backend",
+  "name": "eeg-data-management-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
